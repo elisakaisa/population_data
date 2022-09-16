@@ -1,7 +1,10 @@
 #!/usr/bin/python
 
 import sqlite3
+import matplotlib
+matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
+
 
 connection1 = sqlite3.connect('mondial.db') # establish database connection
 cursor1 = connection1.cursor() # create a database query cursor
@@ -15,16 +18,20 @@ cursor1 = connection1.cursor() # create a database query cursor
 # documentation of plotting library: https://matplotlib.org/, you can use any other
 # library if you like
 
+#----------------- INIT VARIABLE ---------------
+table_name = "linear_prediction"
+
 def drop():
     # delete the table XYData if it does already exist
     try:
-        query = "DROP TABLE XYData";
+        query = "DROP TABLE %s;" % (table_name)
+        #print("Query", query)
         cursor1.execute(query)
         connection1.commit()  
         # by default in pgdb, all executed queries for connection 1 up to here form a transaction
         # we can also explicitly start tranaction by executing BEGIN TRANSACTION
     except sqlite3.Error as e:
-        print("ROLLBACK: XYData table does not exists or other error.")
+        print("ROLLBACK: %s table does not exists or other error." % (table_name))
         print("Error message:", e.args[0])
         connection1.rollback()
         pass
@@ -32,17 +39,13 @@ def drop():
 def init():
     try:
         # Create table sales and add initial tuples
-        query = "CREATE TABLE XYData(x decimal, y decimal)";
+        # new relation “linearprediction” with attributes “name, country, a, b, score” 
+        query = "CREATE TABLE %s(name text, country text, a decimal, b decimal, score decimal);" % (table_name)
         cursor1.execute(query)
-        query = """INSERT INTO XYData VALUES(12.1, 1.00)""";
-        cursor1.execute(query)
-        query = """INSERT INTO XYData VALUES(16.3, 12.1)""";
-        cursor1.execute(query)
-        query = """INSERT INTO XYData VALUES(6.3, 22.1)""";
-        cursor1.execute(query)
-        query = """INSERT INTO XYData VALUES(12.3, 32.1)""";
-        cursor1.execute(query)
-        query = """INSERT INTO XYData VALUES(NULL, 25.1)""";
+
+        # TODO: loop through this with all cities
+        query = """INSERT INTO %s VALUES('SL', 'test', 2.45555, 4.3222222, 3.2)""" % (table_name);
+        print("Query", query)
         cursor1.execute(query)
 
         # this commits all executed queries forming a transaction up to this point
@@ -53,7 +56,7 @@ def init():
 
 def query():
     # Here we test some concurrency issues.
-    xy = "select x, y from XYData";
+    xy = "select name, country, a, b, score from %s;" % (table_name)
     print("U1: (start) "+ xy)
     try:
         cursor1.execute(xy)
@@ -64,21 +67,30 @@ def query():
         connection1.rollback()
         exit()
 
-    xs= []
-    ys= []
+    name = []
+    country = []
+    a = []
+    b = []
+    score = []
     for r in data:
         # you access ith component of row r with r[i], indexing starts with 0
         # check for null values represented as "None" in python before conversion and drop
         # row whenever NULL occurs
         print("Considering tuple", r)
-        if (r[0]!=None and r[0]!=None):
-            xs.append(float(r[0]))
-            ys.append(float(r[1]))
+        if (r[0]!=None and r[1]!=None and r[2]!=None and r[3]!=None and r[4]!=None):
+            name.append(r[0])
+            country.append(r[1])
+            a.append(float(r[2]))
+            b.append(float(r[3]))
+            score.append(float(r[4]))
         else:
             print("Dropped tuple ", r)
-    print("xs:", xs)
-    print("ys:", ys)
-    return [xs, ys]
+    print("name:", name)
+    print("country:", country)
+    print("a: ", a)
+    print("b: ", b)
+    print("score: ", score)
+    return [name, country, a, b, score]
 
 def close():
     connection1.close()
@@ -87,10 +99,10 @@ def close():
 # when calling python filename.py the following functions will be executed:
 drop()
 init()
-[xs, ys] = query()
-plt.scatter(xs, ys)
-plt.savefig("figure.png") # save figure as image in local directory
-plt.show()  # display figure if you run this code locally, otherwise comment out
+[name, country, a, b, score] = query()
+#plt.scatter(xs, ys)
+#plt.savefig("figure.png") # save figure as image in local directory
+#plt.show()  # display figure if you run this code locally, otherwise comment out
 close()
 
 
