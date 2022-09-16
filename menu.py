@@ -13,9 +13,9 @@ class Program:
         self.cur = self.conn.cursor() # create a database query cursor
 
         # specify the command line menu here
-        self.actions = [self.population_query, self.population_plot ,self.exit]
+        self.actions = [self.city_query, self.population_query, self.population_plot, self.population_avg_plot, self.exit]
         # menu text for each of the actions above
-        self.menu = ["Population Query", "Plot Population","Exit"]
+        self.menu = ["City query", "Population Query", "Plot Population", "Plot average population", "Exit"]
         self.cur = self.conn.cursor()
     def print_menu(self):
         """Prints a menu of all functions this program offers.  Returns the numerical correspondant of the choice made."""
@@ -34,6 +34,22 @@ class Program:
             except (NameError,ValueError, TypeError,SyntaxError):
                 print("That was not a number, genious.... :(")
  
+    def city_query(self):
+      
+        city = input("city: ")
+        print("city: %s" % (city))
+        try:
+            query ='SELECT * FROM city WHERE name == "%s"' % (city)
+            print("Will execute: ", query)
+            self.cur.execute(query)
+            result = self.cur.fetchall()
+        except sqlite3.Error as e:
+            print( "Error message:", e.args[0])
+            self.conn.rollback()
+            exit()
+
+        self.print_answer(result)
+    
     def population_query(self):
         minpop = input("min_population: ")
         maxpop = input("max_population: ")
@@ -50,6 +66,7 @@ class Program:
 
         self.print_answer(result)
     
+    #--------------------------- 2a ---------------------------
     def population_plot(self):
         try:
             query ="SELECT year, population FROM citypops"
@@ -73,6 +90,32 @@ class Program:
                 
         plt.scatter(xs, ys, s = 0.5)
         plt.title('City population raw data')
+        plt.show()
+
+    #--------------------------- 2b ---------------------------
+    def population_avg_plot(self):
+        try:
+            query ="SELECT year,avg(population) FROM citypops GROUP BY year"
+            print("Will execute: ", query)
+            self.cur.execute(query)
+            result = self.cur.fetchall()
+        except sqlite3.Error as e:
+            print( "Error message:", e.args[0])
+            self.conn.rollback()
+            exit()
+
+        xs= []
+        ys= []
+        for r in result:
+            # you access ith component of row r with r[i], indexing starts with 0
+            # check for null values represented as "None" in python before conversion and drop
+            # row whenever NULL occurs
+            if (r[0]!=None and r[0]!=None):
+                xs.append(float(r[0]))
+                ys.append(float(r[1]))
+                
+        plt.scatter(xs, ys, s = 2)
+        plt.title('City population average')
         plt.show()
 
     def exit(self):    
