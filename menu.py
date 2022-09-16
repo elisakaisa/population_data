@@ -7,9 +7,6 @@ import numpy as np
 from sklearn.linear_model import LinearRegression
 from sys import exit
 
-# for Python 2.x users
-try: input = raw_input
-except NameError: pass
 
 class Program:
     def __init__(self): #PG-connection setup
@@ -145,7 +142,6 @@ class Program:
                 xs.append(float(r[0]))
                 ys.append(float(r[1]))
 
-        print(xs)
         #linear regression
         regr = LinearRegression().fit(np.array(xs).reshape([-1,1]), np.array(ys).reshape([-1,1]))
         score = regr.score(np.array(xs).reshape([-1,1]), np.array(ys).reshape([-1,1]))
