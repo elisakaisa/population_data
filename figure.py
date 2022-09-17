@@ -39,7 +39,7 @@ def drop():
         pass
 
 def init():
-    """ initialises the table """
+    """ initializes the table """
     try:
         # Create table sales and add initial tuples
         query = "CREATE TABLE %s(name text, country text, a decimal, b decimal, score decimal);" % (table_name)
@@ -47,6 +47,30 @@ def init():
 
         # this commits all executed queries forming a transaction up to this point
         connection1.commit()
+    except sqlite3.Error as e:
+        print("Error message:", e.args[0])
+        connection1.rollback()
+
+def loop_through_db():
+    try:
+        cursor1.execute("""SELECT city, country, year, population FROM citypops GROUP BY city""")
+        
+        country_l = []
+        city_l = []
+
+        while True:
+            # This SQL statement selects all data from the CUSTOMER table.
+            result = cursor1.fetchone()
+            if result is None:
+                break
+            country_l.append(result[1])
+            city_l.append(result[0])
+        
+        # loops through the city lists to fetch the population data
+        for i in range(len(city_l)):
+            [city, country, a, b, regr_score] = population_predict(city_l[i], country_l[i])
+            add_row(city, country, a, b, regr_score)
+            
     except sqlite3.Error as e:
         print("Error message:", e.args[0])
         connection1.rollback()
@@ -65,11 +89,8 @@ def add_row(city, country, a, b, score):
         print("Error message:", e.args[0])
         connection1.rollback()
 
-def population_predict():
+def population_predict(city, country):
     """ calculates the linear regression of the given city """
-    city = input("city: ")
-    print("city: %s" % (city))
-    country = input("country: ")
     try:
         query ='SELECT year, population FROM citypops WHERE city == "%s" AND country == "%s"' % (city, country)
         print("Will execute: ", query)
@@ -144,9 +165,8 @@ def close():
 drop()
 init()
 
-# TODO: loop through this with all cities
-[name1, country1, a1, b1, score1] = population_predict()
-add_row(name1, country1, a1, b1, score1)
+loop_through_db()
+
 
 [name, country, a, b, score] = query()
 close()
