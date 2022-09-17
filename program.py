@@ -177,7 +177,3 @@ class Program:
             except IndexError:
                 print("Bad choice")
                 continue
-
-if __name__ == "__main__":
-    db = Program()
-    db.run()
