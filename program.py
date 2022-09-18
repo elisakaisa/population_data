@@ -7,6 +7,8 @@ import numpy as np
 from sklearn.linear_model import LinearRegression
 from sys import exit
 
+from lin_reg_table import Lin_reg_table
+
 
 class Program:
     def __init__(self): #PG-connection setup
@@ -14,15 +16,17 @@ class Program:
         self.cur = self.conn.cursor() # create a database query cursor
 
         # specify the command line menu here
-        self.actions = [self.city_query, self.population_query, self.population_plot, self.population_avg_plot, self.population_plot_predict, self.exit]
+        self.actions = [self.city_query, self.population_query, self.population_plot, self.population_avg_plot, self.population_plot_predict, self.lin_reg_table, self.exit]
         # menu text for each of the actions above
-        self.menu = ["City query", "Population Query", "Plot Population", "Plot average population", "Predict city population", "Exit"]
+        self.menu = ["City query", "Population Query", "Plot Population", "Plot average population", "Predict city population", "Create table with the linear regressions of all cities", "Exit"]
         self.cur = self.conn.cursor()
+
     def print_menu(self):
-        """Prints a menu of all functions this program offers.  Returns the numerical correspondant of the choice made."""
+        """Prints a menu of all functions this program offers.  Returns the numerical correspondent of the choice made."""
         for i,x in enumerate(self.menu):
             print("%i. %s"%(i+1,x))
         return self.get_int()
+        
     def get_int(self):
         """Retrieves an integer from the user.
         If the user fails to submit an integer, it will reprompt until an integer is submitted."""
@@ -33,7 +37,7 @@ class Program:
                     return choice
                 print("Invalid choice.")
             except (NameError,ValueError, TypeError,SyntaxError):
-                print("That was not a number, genious.... :(")
+                print("That was not a number, genius.... :(")
  
     def city_query(self):
       
@@ -158,6 +162,11 @@ class Program:
         plt.legend(loc='upper left')
         plt.title('City population of %s' % (city))
         plt.show()
+
+    def lin_reg_table(self):
+        #init lin_reg class
+        lin_reg = Lin_reg_table(self.conn, self.cur)
+        lin_reg.run()
 
     def exit(self):    
         self.cur.close()

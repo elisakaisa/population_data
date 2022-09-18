@@ -14,6 +14,14 @@ Additional requirements:
 - numpy
 - sklearn
 
+## How to use
+
+```bash
+git clone https://github.com/elisakaisa/population_data.git
+python3 main.py
+
+```
+
 ## Credits
 
 The [initial code](https://github.com/elisakaisa/population_data/tree/066d561cc6a14485a4c364e644e6884727e760bf) was provided by Florian Pokorny in the scope of the course DD1334 at KTH in 2022.
