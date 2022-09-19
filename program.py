@@ -31,7 +31,7 @@ class Program:
         # menu text for each of the actions above
         self.menu = [   "City query", "Population Query", 
                         "Plot Population (2a)", 
-                        "Plot average population (2b)", 
+                        "Plot sum of population (2b)", 
                         "Predict city population (2c)", 
                         "Create table with the linear regressions of all cities (2d)", 
                         "Create a table with predictions for all years (2e)", 
@@ -72,7 +72,7 @@ class Program:
         self.raw_data_queries.population_plot()
 
     def menu_4(self):
-        self.raw_data_queries.population_avg_plot()
+        self.raw_data_queries.population_sum_plot()
     
     def menu_5(self):
         self.raw_data_queries.population_plot_predict()

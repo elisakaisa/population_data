@@ -67,9 +67,9 @@ class Raw_data_queries:
         plt.title('City population raw data')
         plt.show()
 
-    def population_avg_plot(self):
+    def population_sum_plot(self):
         try:
-            query ="SELECT year, avg(population) FROM citypops GROUP BY year"
+            query ="SELECT year, sum(population) FROM citypops GROUP BY year"
             print("Will execute: ", query)
             self.cursor1.execute(query)
             result = self.cursor1.fetchall()
@@ -88,7 +88,7 @@ class Raw_data_queries:
                 ys.append(float(r[1]))
                 
         plt.scatter(xs, ys, s = 10)
-        plt.title('City population average')
+        plt.title('City population sum')
         plt.show()
 
     def population_plot_predict(self):
