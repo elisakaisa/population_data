@@ -77,7 +77,7 @@ class Prediction_table:
         return a*year + b
     
     def populate(self, city_list, country_list, a_list, b_list):
-        print("Adding data to the table, start")
+        print("Adding data to the table, start") 
         years = [*range(1950, 2051, 1)]
 
         #init

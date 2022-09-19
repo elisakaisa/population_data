@@ -23,14 +23,16 @@ class Program:
         self.cur = self.conn.cursor()
 
     def print_menu(self):
-        """Prints a menu of all functions this program offers.  Returns the numerical correspondent of the choice made."""
+        """Prints a menu of all functions this program offers.  
+        Returns the numerical correspondent of the choice made."""
         for i,x in enumerate(self.menu):
             print("%i. %s"%(i+1,x))
         return self.get_int()
         
     def get_int(self):
         """Retrieves an integer from the user.
-        If the user fails to submit an integer, it will reprompt until an integer is submitted."""
+        If the user fails to submit an integer, 
+        it will reprompt until an integer is submitted."""
         while True:
             try:
                 choice = int(input("Choose: "))

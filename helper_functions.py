@@ -2,7 +2,7 @@ import sqlite3
 
 
 def drop(cursor, connection, table_name):
-    """delete the table if it does already exist"""
+    """ delete the table if it does already exist """
     try:
         query = "DROP TABLE %s;" % (table_name)
         cursor.execute(query)

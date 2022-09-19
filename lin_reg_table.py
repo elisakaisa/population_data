@@ -59,7 +59,6 @@ class Lin_reg_table:
         """ calculates the linear regression of the given city """
         try:
             query ='SELECT year, population FROM citypops WHERE city == "%s" AND country == "%s"' % (city, country)
-            #print("Will execute: ", query)
             self.cursor1.execute(query)
             result = self.cursor1.fetchall()
         except sqlite3.Error as e:
