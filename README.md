@@ -2,6 +2,8 @@
 
 ## Description
 
+The goal of this lab is to predict the urban population growth. It is modelled with a simple linear regression `population = a * year + b`, where a and b are respectively the slope and the intersect.
+
 ## Requirements
 
 The database `mondial.db` can be downloaded here [here](https://github.com/seralf/mondial_sqlite/blob/master/db/mondial.db). It is gitignored in this project because of it's large size, but it is placed at the root of the project.

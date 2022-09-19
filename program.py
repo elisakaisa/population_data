@@ -22,9 +22,23 @@ class Program:
         self.lin_reg = Lin_reg_table(self.conn, self.cur)
 
         # specify the command line menu here
-        self.actions = [self.menu_1, self.menu_2, self.menu_3, self.menu_4, self.menu_5, self.lin_reg_table, self.create_prediction_table, self.plot_city_prediction_table, self.exit]
+        self.actions = [    self.menu_1, self.menu_2, 
+                            self.menu_3, self.menu_4, 
+                            self.menu_5, self.lin_reg_table, 
+                            self.create_prediction_table, self.plot_city_prediction_table, 
+                            self.plot_city_predictions, self.menu_10,
+                            self.exit]
         # menu text for each of the actions above
-        self.menu = ["City query", "Population Query", "Plot Population (2a)", "Plot average population (2b)", "Predict city population", "Create table with the linear regressions of all cities", "Create a table with predictions for all years", "Plot the prediction for a city", "Exit"]
+        self.menu = [   "City query", "Population Query", 
+                        "Plot Population (2a)", 
+                        "Plot average population (2b)", 
+                        "Predict city population (2c)", 
+                        "Create table with the linear regressions of all cities (2d)", 
+                        "Create a table with predictions for all years (2e)", 
+                        "Plot the prediction for a city (2e)", 
+                        "Visualize population trends for all cities (2f)", 
+                        "Visualize population trend average (2f)",
+                        "Exit"]
 
     def print_menu(self):
         """Prints a menu of all functions this program offers.  
@@ -71,6 +85,12 @@ class Program:
 
     def plot_city_prediction_table(self):
         self.prediction_table.graph_city()
+    
+    def plot_city_predictions(self):
+        self.prediction_table.graph_all_cities()
+
+    def menu_10(self):
+        self.prediction_table.graph_city_avg()
 
     def exit(self):    
         self.cur.close()

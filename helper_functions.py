@@ -30,3 +30,23 @@ def init_table(cursor, connection, attributes, table_name):
     except sqlite3.Error as e:
         print("Error message:", e.args[0])
         connection.rollback()
+
+def check_if_table_in_db(cursor, connection, table_name):
+    #get the count of tables with the name
+    result = cursor.execute("""SELECT count(name) FROM sqlite_master WHERE type='table' AND name='%s';""" % (table_name))
+
+    for table in result:
+        inDb = table[0]
+
+    #commit the changes to db			
+    connection.commit()
+
+    #if the count is 1, then table exists
+    if inDb == 1: 
+        print('Table %s exists.' % (table_name))
+        return True
+    else :
+        print('Table %s does not exist.' % (table_name))
+        return False
+                
+    
