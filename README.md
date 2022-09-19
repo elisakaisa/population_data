@@ -19,7 +19,6 @@ Additional requirements:
 ```bash
 git clone https://github.com/elisakaisa/population_data.git
 python3 main.py
-
 ```
 
 ## Credits
