@@ -29,10 +29,10 @@ class Prediction_table:
         self.table_name = "PredictionTable"
 
     def run(self):
-        #TODO: add chekc that table linear_regression exists
+        #TODO: add check that table linear_regression exists
         drop(self.cursor1, self.connection1, self.table_name)
         init_table(self.cursor1, self.connection1, "(name text, country text, population int, year int)", self.table_name)
-        [name_list, country_list, a_list, b_list, score_list] = self.query_lin_reg_table()
+        [name_list, country_list, a_list, b_list] = self.query_lin_reg_table()
         self.populate(name_list, country_list, a_list, b_list)
 
         # for debugging purposes
@@ -56,22 +56,20 @@ class Prediction_table:
         country_list = []
         a_list = []
         b_list = []
-        score_list = []
         for r in data:
             # you access ith component of row r with r[i], indexing starts with 0
             # check for null values represented as "None" in python before conversion and drop
             # row whenever NULL occurs
             #print("Considering tuple", r)
-            if (r[0]!=None and r[1]!=None and r[2]!=None and r[3]!=None and r[4]!=None):
+            if (r[0]!=None and r[1]!=None and r[2]!=None and r[3]!=None):
                 name_list.append(r[0])
                 country_list.append(r[1])
                 a_list.append(float(r[2]))
                 b_list.append(float(r[3]))
-                score_list.append(float(r[4]))
             else:
                 print("Dropped tuple ", r)
 
-        return [name_list, country_list, a_list, b_list, score_list]
+        return [name_list, country_list, a_list, b_list]
 
     def linear_prediction(self, a, b, year):
         return a*year + b

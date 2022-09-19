@@ -4,6 +4,8 @@
 
 ## Requirements
 
+The database `mondial.db` can be downloaded here [here](https://github.com/seralf/mondial_sqlite/blob/master/db/mondial.db). It is gitignored in this project because of it's large size, but it is placed at the root of the project.
+
 `Python 3.8.10` is required, might work on previous versions, but hasn't been tested.
 
 Additional requirements:

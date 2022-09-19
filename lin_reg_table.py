@@ -25,7 +25,6 @@ class Lin_reg_table:
             city_l = []
 
             while True:
-                # This SQL statement selects all data from the CUSTOMER table.
                 result = self.cursor1.fetchone()
                 if result is None:
                     break
@@ -108,7 +107,6 @@ class Lin_reg_table:
         b_list = []
         score_list = []
         for r in data:
-            # you access ith component of row r with r[i], indexing starts with 0
             # check for null values represented as "None" in python before conversion and drop
             # row whenever NULL occurs
             #print("Considering tuple", r)

@@ -1,4 +1,3 @@
-#!/usr/bin/python
 import sqlite3
 import matplotlib
 matplotlib.use('TkAgg')
@@ -7,6 +6,7 @@ import numpy as np
 from sklearn.linear_model import LinearRegression
 from sys import exit
 
+from raw_data_queries import Raw_data_queries
 from lin_reg_table import Lin_reg_table
 from prediction_table import Prediction_table
 
@@ -16,11 +16,15 @@ class Program:
         self.conn = sqlite3.connect('mondial.db') # establish database connection
         self.cur = self.conn.cursor() # create a database query cursor
 
+        # init classes
+        self.raw_data_queries = Raw_data_queries(self.conn, self.cur)
+        self.prediction_table = Prediction_table(self.conn, self.cur)
+        self.lin_reg = Lin_reg_table(self.conn, self.cur)
+
         # specify the command line menu here
-        self.actions = [self.city_query, self.population_query, self.population_plot, self.population_avg_plot, self.population_plot_predict, self.lin_reg_table, self.prediction_table, self.plot_city_prediction_table, self.exit]
+        self.actions = [self.menu_1, self.menu_2, self.menu_3, self.menu_4, self.menu_5, self.lin_reg_table, self.create_prediction_table, self.plot_city_prediction_table, self.exit]
         # menu text for each of the actions above
-        self.menu = ["City query", "Population Query", "Plot Population", "Plot average population", "Predict city population", "Create table with the linear regressions of all cities", "Create a table with predictions for all years", "Plot the prediction for a city", "Exit"]
-        self.cur = self.conn.cursor()
+        self.menu = ["City query", "Population Query", "Plot Population (2a)", "Plot average population (2b)", "Predict city population", "Create table with the linear regressions of all cities", "Create a table with predictions for all years", "Plot the prediction for a city", "Exit"]
 
     def print_menu(self):
         """Prints a menu of all functions this program offers.  
@@ -42,142 +46,31 @@ class Program:
             except (NameError,ValueError, TypeError,SyntaxError):
                 print("That was not a number, genius.... :(")
  
-    def city_query(self):
-      
-        city = input("city: ")
-        print("city: %s" % (city))
-        try:
-            query ='SELECT * FROM city WHERE name == "%s"' % (city)
-            print("Will execute: ", query)
-            self.cur.execute(query)
-            result = self.cur.fetchall()
-        except sqlite3.Error as e:
-            print( "Error message:", e.args[0])
-            self.conn.rollback()
-            exit()
-
+    def menu_1(self):
+        result = self.raw_data_queries.city_query()
         self.print_answer(result)
     
-    def population_query(self):
-        minpop = input("min_population: ")
-        maxpop = input("max_population: ")
-        print("minpop: %s, maxpop: %s" % (minpop, maxpop))
-        try:
-            query ="SELECT * FROM city WHERE population >=%s AND population <= %s" % (minpop, maxpop)
-            print("Will execute: ", query)
-            self.cur.execute(query)
-            result = self.cur.fetchall()
-        except sqlite3.Error as e:
-            print( "Error message:", e.args[0])
-            self.conn.rollback()
-            exit()
-
+    def menu_2(self):
+        result = self.raw_data_queries.population_query()
         self.print_answer(result)
     
-    #--------------------------- 2a ---------------------------
-    def population_plot(self):
-        try:
-            query ="SELECT year, population FROM citypops"
-            print("Will execute: ", query)
-            self.cur.execute(query)
-            result = self.cur.fetchall()
-        except sqlite3.Error as e:
-            print( "Error message:", e.args[0])
-            self.conn.rollback()
-            exit()
+    def menu_3(self):
+        self.raw_data_queries.population_plot()
 
-        xs= []
-        ys= []
-        for r in result:
-            # you access ith component of row r with r[i], indexing starts with 0
-            # check for null values represented as "None" in python before conversion and drop
-            # row whenever NULL occurs
-            if (r[0]!=None and r[0]!=None):
-                xs.append(float(r[0]))
-                ys.append(float(r[1]))
-                
-        plt.scatter(xs, ys, s = 0.5)
-        plt.title('City population raw data')
-        plt.show()
-
-    #--------------------------- 2b ---------------------------
-    def population_avg_plot(self):
-        try:
-            query ="SELECT year, avg(population) FROM citypops GROUP BY year"
-            print("Will execute: ", query)
-            self.cur.execute(query)
-            result = self.cur.fetchall()
-        except sqlite3.Error as e:
-            print( "Error message:", e.args[0])
-            self.conn.rollback()
-            exit()
-
-        xs= []
-        ys= []
-        for r in result:
-            # you access ith component of row r with r[i], indexing starts with 0
-            # check for null values represented as "None" in python before conversion and drop
-            # row whenever NULL occurs
-            if (r[0]!=None and r[0]!=None):
-                xs.append(float(r[0]))
-                ys.append(float(r[1]))
-                
-        plt.scatter(xs, ys, s = 10)
-        plt.title('City population average')
-        plt.show()
+    def menu_4(self):
+        self.raw_data_queries.population_avg_plot()
     
-    def population_plot_predict(self):
-        city = input("city: ")
-        print("city: %s" % (city))
-        try:
-            query ='SELECT year, population FROM citypops WHERE city == "%s"' % (city)
-            print("Will execute: ", query)
-            self.cur.execute(query)
-            result = self.cur.fetchall()
-        except sqlite3.Error as e:
-            print( "Error message:", e.args[0])
-            self.conn.rollback()
-            exit()
-
-        xs= []
-        ys= []
-        for r in result:
-            # you access ith component of row r with r[i], indexing starts with 0
-            # check for null values represented as "None" in python before conversion and drop
-            # row whenever NULL occurs
-            if (r[0]!=None and r[0]!=None):
-                xs.append(float(r[0]))
-                ys.append(float(r[1]))
-
-        #linear regression
-        regr = LinearRegression().fit(np.array(xs).reshape([-1,1]), np.array(ys).reshape([-1,1]))
-        score = regr.score(np.array(xs).reshape([-1,1]), np.array(ys).reshape([-1,1]))
-        print("The score of the linear regression is: %s" % (score))
-        a = regr.coef_[0][0]
-        b = regr.intercept_[0]
-
-        x_regression = np.array(xs).reshape([-1,1])
-        y_regression = a*x_regression + b
-        label = "%s * x + %s" % (a, b)
-
-        plt.scatter(xs, ys, s = 10)
-        plt.plot(xs, y_regression, '-r', label=label)
-        plt.legend(loc='upper left')
-        plt.title('City population of %s' % (city))
-        plt.show()
+    def menu_5(self):
+        self.raw_data_queries.population_plot_predict()
 
     def lin_reg_table(self):
-        #init lin_reg class
-        lin_reg = Lin_reg_table(self.conn, self.cur)
-        lin_reg.run()
+        self.lin_reg.run()
     
-    def prediction_table(self):
-        pred = Prediction_table(self.conn, self.cur)
-        pred.run()
+    def create_prediction_table(self):
+        self.prediction_table.run()
 
     def plot_city_prediction_table(self):
-        pred = Prediction_table(self.conn, self.cur)
-        pred.graph_city()
+        self.prediction_table.graph_city()
 
     def exit(self):    
         self.cur.close()
