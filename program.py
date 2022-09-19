@@ -8,6 +8,7 @@ from sklearn.linear_model import LinearRegression
 from sys import exit
 
 from lin_reg_table import Lin_reg_table
+from prediction_table import Prediction_table
 
 
 class Program:
@@ -16,9 +17,9 @@ class Program:
         self.cur = self.conn.cursor() # create a database query cursor
 
         # specify the command line menu here
-        self.actions = [self.city_query, self.population_query, self.population_plot, self.population_avg_plot, self.population_plot_predict, self.lin_reg_table, self.exit]
+        self.actions = [self.city_query, self.population_query, self.population_plot, self.population_avg_plot, self.population_plot_predict, self.lin_reg_table, self.prediction_table, self.plot_city_prediction_table, self.exit]
         # menu text for each of the actions above
-        self.menu = ["City query", "Population Query", "Plot Population", "Plot average population", "Predict city population", "Create table with the linear regressions of all cities", "Exit"]
+        self.menu = ["City query", "Population Query", "Plot Population", "Plot average population", "Predict city population", "Create table with the linear regressions of all cities", "Create a table with predictions for all years", "Plot the prediction for a city", "Exit"]
         self.cur = self.conn.cursor()
 
     def print_menu(self):
@@ -167,6 +168,14 @@ class Program:
         #init lin_reg class
         lin_reg = Lin_reg_table(self.conn, self.cur)
         lin_reg.run()
+    
+    def prediction_table(self):
+        pred = Prediction_table(self.conn, self.cur)
+        pred.run()
+
+    def plot_city_prediction_table(self):
+        pred = Prediction_table(self.conn, self.cur)
+        pred.graph_city()
 
     def exit(self):    
         self.cur.close()
