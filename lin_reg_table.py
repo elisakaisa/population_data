@@ -123,6 +123,6 @@ class Lin_reg_table:
 
     def run(self):
         drop(self.cursor1, self.connection1, self.table_name)
-        init_table(self.cursor1, self.connection1, "(name text, country text, a decimal, b decimal, score decimal)", self.table_name)
+        init_table_linreg(self.cursor1, self.connection1)
         self.loop_through_db()
         [name_list, country_list, a_list, b_list, score_list] = self.query()

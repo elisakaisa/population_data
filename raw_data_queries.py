@@ -13,11 +13,9 @@ class Raw_data_queries:
 
     def city_query(self):
         city = input("city: ")
-        print("city: %s" % (city))
         try:
-            query ='SELECT * FROM city WHERE name == "%s"' % (city)
-            print("Will execute: ", query)
-            self.cursor1.execute(query)
+            query ='SELECT * FROM city WHERE name == (?);'
+            self.cursor1.execute(query, (city,))
             result = self.cursor1.fetchall()
         except sqlite3.Error as e:
             print( "Error message:", e.args[0])
@@ -29,11 +27,9 @@ class Raw_data_queries:
     def population_query(self):
         minpop = input("min_population: ")
         maxpop = input("max_population: ")
-        print("minpop: %s, maxpop: %s" % (minpop, maxpop))
         try:
-            query ="SELECT * FROM city WHERE population >=%s AND population <= %s" % (minpop, maxpop)
-            print("Will execute: ", query)
-            self.cursor1.execute(query)
+            query ="SELECT * FROM city WHERE population >=(?) AND population <=(?)"
+            self.cursor1.execute(query, (minpop, maxpop))
             result = self.cursor1.fetchall()
         except sqlite3.Error as e:
             print( "Error message:", e.args[0])
@@ -95,9 +91,8 @@ class Raw_data_queries:
         city = input("city: ")
         print("city: %s" % (city))
         try:
-            query ='SELECT year, population FROM citypops WHERE city == "%s"' % (city)
-            print("Will execute: ", query)
-            self.cursor1.execute(query)
+            query ='SELECT year, population FROM citypops WHERE city == (?)'
+            self.cursor1.execute(query, (city,))
             result = self.cursor1.fetchall()
         except sqlite3.Error as e:
             print( "Error message:", e.args[0])

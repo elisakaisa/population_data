@@ -16,17 +16,50 @@ def drop(cursor, connection, table_name):
         connection.rollback()
         pass
 
-def init_table(cursor, connection, attributes, table_name):
+def init_table_linreg(cursor, connection):
     """ initializes the table """
     try:
         # Create table sales and add initial tuples
-        query = "CREATE TABLE %s%s;" % (table_name, attributes)
+        query = """CREATE TABLE linear_prediction(
+                        name TEXT,
+                        country TEXT,
+                        a DECIMAL,
+                        b DECIMAL,
+                        score DECIMAL,
+                        PRIMARY KEY (name, country),
+                        CONSTRAINT ValidRegression
+                            CHECK(
+                                score>= 0 AND score<= 1
+                                AND a NOT NULL
+                                AND b NOT NULL
+                                )
+                            );"""
         cursor.execute(query)
 
         # this commits all executed queries forming a transaction up to this point
         connection.commit()
 
-        print('query: ', query, " executed, table created: ", table_name)
+        print('query: ', query, " executed, table created")
+    except sqlite3.Error as e:
+        print("Error message:", e.args[0])
+        connection.rollback()
+
+def init_table_prediction(cursor, connection):
+    """ initializes the table """
+    try:
+        # Create table sales and add initial tuples
+        query = """CREATE TABLE PredictionTable(
+                        name TEXT,
+                        country TEXT,
+                        population NUMBER,
+                        year Number
+                            );"""
+        cursor.execute(query)
+
+        # this commits all executed queries forming a transaction up to this point
+        connection.commit()
+
+        print('query: ', query, " executed, table created")
     except sqlite3.Error as e:
         print("Error message:", e.args[0])
         connection.rollback()
