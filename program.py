@@ -9,7 +9,7 @@ from sys import exit
 from raw_data_queries import Raw_data_queries
 from lin_reg_table import Lin_reg_table
 from prediction_table import Prediction_table
-
+from prediction_analysis import Prediction_analysis
 
 class Program:
     def __init__(self): #PG-connection setup
@@ -20,6 +20,7 @@ class Program:
         self.raw_data_queries = Raw_data_queries(self.conn, self.cur)
         self.prediction_table = Prediction_table(self.conn, self.cur)
         self.lin_reg = Lin_reg_table(self.conn, self.cur)
+        self.prediction_analysis = Prediction_analysis(self.conn, self.cur)
 
         # specify the command line menu here
         self.actions = [    self.menu_1, self.menu_2, 
@@ -27,7 +28,7 @@ class Program:
                             self.menu_5, self.lin_reg_table, 
                             self.create_prediction_table, self.plot_city_prediction_table, 
                             self.plot_city_predictions, self.menu_10,
-                            self.exit]
+                            self.menu_11, self.exit]
         # menu text for each of the actions above
         self.menu = [   "City query", "Population Query", 
                         "Plot Population (2a)", 
@@ -38,6 +39,7 @@ class Program:
                         "Plot the prediction for a city (2e)", 
                         "Visualize population trends for all cities (2f)", 
                         "Visualize population trend average (2f)",
+                        "Hypothesis (2g)",
                         "Exit"]
 
     def print_menu(self):
@@ -60,6 +62,7 @@ class Program:
             except (NameError,ValueError, TypeError,SyntaxError):
                 print("That was not a number, genius.... :(")
  
+    # menu functions
     def menu_1(self):
         result = self.raw_data_queries.city_query()
         self.print_answer(result)
@@ -91,6 +94,9 @@ class Program:
 
     def menu_10(self):
         self.prediction_table.graph_city_avg()
+
+    def menu_11(self):
+        self.prediction_analysis.run()
 
     def exit(self):    
         self.cur.close()

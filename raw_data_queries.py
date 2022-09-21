@@ -14,7 +14,7 @@ class Raw_data_queries:
     def city_query(self):
         city = input("city: ")
         try:
-            query ='SELECT * FROM city WHERE name == (?);'
+            query ='SELECT * FROM PopData WHERE name == (?);'
             self.cursor1.execute(query, (city,))
             result = self.cursor1.fetchall()
         except sqlite3.Error as e:
@@ -28,7 +28,7 @@ class Raw_data_queries:
         minpop = input("min_population: ")
         maxpop = input("max_population: ")
         try:
-            query ="SELECT * FROM city WHERE population >=(?) AND population <=(?)"
+            query ="SELECT * FROM PopData WHERE population >=(?) AND population <=(?)"
             self.cursor1.execute(query, (minpop, maxpop))
             result = self.cursor1.fetchall()
         except sqlite3.Error as e:
@@ -40,7 +40,7 @@ class Raw_data_queries:
     
     def population_plot(self):
         try:
-            query ="SELECT year, population FROM citypops"
+            query ="SELECT year, population FROM PopData"
             print("Will execute: ", query)
             self.cursor1.execute(query)
             result = self.cursor1.fetchall()
@@ -65,7 +65,7 @@ class Raw_data_queries:
 
     def population_sum_plot(self):
         try:
-            query ="SELECT year, sum(population) FROM citypops GROUP BY year"
+            query ="SELECT year, sum(population) FROM PopData GROUP BY year"
             print("Will execute: ", query)
             self.cursor1.execute(query)
             result = self.cursor1.fetchall()
@@ -91,7 +91,7 @@ class Raw_data_queries:
         city = input("city: ")
         print("city: %s" % (city))
         try:
-            query ='SELECT year, population FROM citypops WHERE city == (?)'
+            query ='SELECT year, population FROM PopData WHERE name == (?)'
             self.cursor1.execute(query, (city,))
             result = self.cursor1.fetchall()
         except sqlite3.Error as e:

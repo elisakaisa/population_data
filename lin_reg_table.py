@@ -19,7 +19,7 @@ class Lin_reg_table:
             then adds it to the new table"""
         print("looping through database")
         try:
-            self.cursor1.execute("""SELECT city, country, year, population FROM citypops GROUP BY city""")
+            self.cursor1.execute("""SELECT name, country, year, population FROM PopData GROUP BY name""")
             
             country_l = []
             city_l = []
@@ -44,9 +44,9 @@ class Lin_reg_table:
     def add_row(self, city, country, a, b, score):
         """ adds a row to the table initialized in init() """
         try:
-            query = """INSERT INTO %s VALUES("%s", '%s', %f, %f, %f)""" % (self.table_name, city, country, a, b, score);
+            query = """INSERT INTO linear_prediction VALUES((?), (?),(?), (?), (?))""";
             #print("Query", query)
-            self.cursor1.execute(query)
+            self.cursor1.execute(query, (city, country, a, b, score))
 
             # this commits all executed queries forming a transaction up to this point
             self.connection1.commit()
@@ -57,8 +57,8 @@ class Lin_reg_table:
     def population_predict(self, city, country):
         """ calculates the linear regression of the given city """
         try:
-            query ='SELECT year, population FROM citypops WHERE city == "%s" AND country == "%s"' % (city, country)
-            self.cursor1.execute(query)
+            query ='SELECT year, population FROM PopData WHERE name == (?) AND country == (?)'
+            self.cursor1.execute(query, (city, country))
             result = self.cursor1.fetchall()
         except sqlite3.Error as e:
             print( "Error message (lin_regr): ", e.args[0])
