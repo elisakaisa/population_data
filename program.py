@@ -1,9 +1,6 @@
 import sqlite3
 import matplotlib
 matplotlib.use('TkAgg')
-import matplotlib.pyplot as plt
-import numpy as np
-from sklearn.linear_model import LinearRegression
 from sys import exit
 
 from raw_data_queries import Raw_data_queries
@@ -28,7 +25,8 @@ class Program:
                             self.menu_5, self.lin_reg_table, 
                             self.create_prediction_table, self.plot_city_prediction_table, 
                             self.plot_city_predictions, self.menu_10,
-                            self.menu_11, self.exit]
+                            self.menu_11, self.menu_12,
+                            self.exit]
         # menu text for each of the actions above
         self.menu = [   "City query", "Population Query", 
                         "Plot Population (2a)", 
@@ -40,6 +38,7 @@ class Program:
                         "Visualize population trends for all cities (2f)", 
                         "Visualize population trend average (2f)",
                         "Hypothesis (2g)",
+                        "Hypothesis part 2 (2g)",
                         "Exit"]
 
     def print_menu(self):
@@ -96,7 +95,10 @@ class Program:
         self.prediction_table.graph_city_avg()
 
     def menu_11(self):
-        self.prediction_analysis.run()
+        self.prediction_analysis.join_tables_pop()
+    
+    def menu_12(self):
+        self.prediction_analysis.join_tables_pred()
 
     def exit(self):    
         self.cur.close()

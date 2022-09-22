@@ -79,7 +79,7 @@ class Raw_data_queries:
         for r in result:
             # check for null values represented as "None" in python before conversion and drop
             # row whenever NULL occurs
-            if (r[0]!=None and r[0]!=None):
+            if (r[0]!=None and r[1]!=None):
                 xs.append(float(r[0]))
                 ys.append(float(r[1]))
                 
