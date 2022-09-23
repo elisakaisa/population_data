@@ -45,11 +45,11 @@ class Prediction_table:
 
     def query_lin_reg_table(self):
         """ queries the table and turns the results into lists"""
-        # Here we test some concurrency issues.
-        xy = "select name, country, a, b, score from linear_prediction;"
-        print("U1: (start) "+ xy)
+        query = """ SELECT name, country, a, b, score 
+                    FROM linear_prediction;"""
+        print("U1: (start) "+ query)
         try:
-            self.cursor1.execute(xy)
+            self.cursor1.execute(query)
             data = self.cursor1.fetchall()
             self.connection1.commit()
         except sqlite3.Error as e:
@@ -61,6 +61,7 @@ class Prediction_table:
         country_list = []
         a_list = []
         b_list = []
+    
         for r in data:
             # you access ith component of row r with r[i], indexing starts with 0
             # check for null values represented as "None" in python before conversion and drop
@@ -74,6 +75,7 @@ class Prediction_table:
             else:
                 print("Dropped tuple ", r)
 
+        print(len(name_list))
         return [name_list, country_list, a_list, b_list]
 
     def linear_prediction(self, a, b, year):

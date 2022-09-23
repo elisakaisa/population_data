@@ -95,10 +95,10 @@ class Program:
         self.prediction_table.graph_city_avg()
 
     def menu_11(self):
-        self.prediction_analysis.join_tables_pop()
+        self.prediction_analysis.join_tables_pred()
     
     def menu_12(self):
-        self.prediction_analysis.join_tables_pred()
+        self.prediction_analysis.join_tables_pred_by_group()
 
     def exit(self):    
         self.cur.close()
