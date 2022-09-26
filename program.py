@@ -25,7 +25,9 @@ class Program:
                             self.menu_5, self.lin_reg_table, 
                             self.create_prediction_table, self.plot_city_prediction_table, 
                             self.plot_city_predictions, self.menu_10,
-                            self.menu_11, self.menu_12,
+                            self.menu_11, 
+                            self.menu_12,
+                            self.menu_13,
                             self.exit]
         # menu text for each of the actions above
         self.menu = [   "City query", "Population Query", 
@@ -39,6 +41,7 @@ class Program:
                         "Visualize population trend average (2f)",
                         "Hypothesis (2g)",
                         "Hypothesis part 2 (2g)",
+                        "World map",
                         "Exit"]
 
     def print_menu(self):
@@ -99,6 +102,9 @@ class Program:
     
     def menu_12(self):
         self.prediction_analysis.join_tables_pred_by_group()
+
+    def menu_13(self):
+        self.prediction_analysis.explore()
 
     def exit(self):    
         self.cur.close()

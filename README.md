@@ -17,6 +17,7 @@ Additional requirements:
 - tkinter (because of `matplotlib.use('TkAgg')`, not necessary if not run in a virtual environment)
 - numpy
 - sklearn
+- scipy
 
 ## How to use
 
